@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "us-stock-alerts"
+version = "1.0.0"
+description = "US stock swing-signal scanner with Telegram / Discord / Slack / webhook alerts. No order execution."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "us-stock-alerts contributors" }]
+keywords = ["stocks", "alerts", "trading-signals", "yahoo-finance"]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Office/Business :: Financial :: Investment",
+]
+dependencies = [
+  "pandas>=2.0",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+us-stock-alerts = "us_stock_alerts.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["us_stock_alerts*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

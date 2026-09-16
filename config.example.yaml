@@ -1,0 +1,45 @@
+# Copy to config.yaml and edit.
+# Secrets should come from environment variables, not this file.
+
+watchlist:
+  - AAPL
+  - MSFT
+  - NVDA
+  - GOOGL
+  - AMZN
+  - META
+  - AVGO
+  - JPM
+  - XOM
+  - UNH
+
+benchmark: SPY
+
+strategy:
+  fast_ma: 20
+  slow_ma: 50
+  rs_lookback: 20
+  volume_mult: 1.10
+  sell_drawdown: 0.10
+  min_history: 60
+
+notify:
+  # Only send BUY / SELL. Set false to also send HOLD / WATCH lines.
+  only_actionable: true
+  telegram:
+    enabled: false
+    # TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID env vars override these
+    bot_token: ""
+    chat_id: ""
+  discord:
+    enabled: false
+    webhook_url: ""
+  slack:
+    enabled: false
+    webhook_url: ""
+  webhook:
+    enabled: false
+    url: ""
+
+output_dir: out
+state_file: state.json
