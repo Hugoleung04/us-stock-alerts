@@ -1,0 +1,38 @@
+name: Daily US close scan
+
+on:
+  schedule:
+    # 21:30 UTC Mon-Fri after US cash close
+    - cron: "30 21 * * 1-5"
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -e .
+      - name: Scan
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GENERIC_WEBHOOK_URL: ${{ secrets.GENERIC_WEBHOOK_URL }}
+        run: |
+          if [ -f config.yaml ]; then CFG=config.yaml; else CFG=config.example.yaml; fi
+          python -m us_stock_alerts --config "$CFG"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: signals
+          path: |
+            out/signals.csv
+            out/signals.md
+            state.json
