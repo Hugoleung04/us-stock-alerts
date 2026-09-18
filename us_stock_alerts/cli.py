@@ -6,6 +6,7 @@ from pathlib import Path
 
 from .config import load_config, params_from_config
 from .data import DataError, fetch_daily, fetch_many
+from .dashboard import write_dashboard
 from .notify import format_text, send_all
 from .report import write_outputs
 from .state import load_state, save_state, update_from_signals
@@ -21,6 +22,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--no-notify", action="store_true", help="Print only, do not send")
     p.add_argument("--all", action="store_true", help="Include HOLD rows in the message")
     p.add_argument("--lookback", default="1y", help="Yahoo range, default 1y")
+    p.add_argument("--serve", action="store_true", help="Open local dashboard after scan")
+    p.add_argument("--port", type=int, default=8765, help="Dashboard port")
     return p
 
 
@@ -60,7 +63,8 @@ def run(args: argparse.Namespace) -> int:
         print("\nSkipped (no data): " + ", ".join(missing), file=sys.stderr)
 
     paths = write_outputs(signals, cfg["output_dir"])
-    print(f"\nWrote {paths['csv']} and {paths['markdown']}")
+    dash = write_dashboard(signals, cfg["output_dir"])
+    print(f"\nWrote {paths['csv']}, {paths['markdown']}, {dash['html']}")
 
     state = update_from_signals(state, signals)
     save_state(cfg["state_file"], state)
@@ -75,6 +79,11 @@ def run(args: argparse.Namespace) -> int:
             print("Sent via: " + ", ".join(sent))
         else:
             print("No notification channels configured.")
+
+    if args.serve:
+        from .server import serve
+
+        serve(cfg["output_dir"], port=args.port)
     return 0
 
 
