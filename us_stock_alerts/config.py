@@ -39,4 +39,7 @@ def params_from_config(cfg: dict) -> StrategyParams:
         volume_mult=float(s.get("volume_mult", 1.10)),
         sell_drawdown=float(s.get("sell_drawdown", 0.10)),
         min_history=int(s.get("min_history", 60)),
+        buy_threshold=float(s.get("buy_threshold", 0.55)),
+        sell_threshold=float(s.get("sell_threshold", 0.45)),
+        trail_bars=int(s.get("trail_bars", 40)),
     )

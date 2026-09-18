@@ -2,7 +2,6 @@ name: Daily US close scan
 
 on:
   schedule:
-    # 21:30 UTC Mon-Fri after US cash close
     - cron: "30 21 * * 1-5"
   workflow_dispatch:
 
@@ -27,7 +26,19 @@ jobs:
           GENERIC_WEBHOOK_URL: ${{ secrets.GENERIC_WEBHOOK_URL }}
         run: |
           if [ -f config.yaml ]; then CFG=config.yaml; else CFG=config.example.yaml; fi
-          python -m us_stock_alerts --config "$CFG"
+          python -m us_stock_alerts --config "$CFG" --all --no-notify
+      - name: Notify if secrets present
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GENERIC_WEBHOOK_URL: ${{ secrets.GENERIC_WEBHOOK_URL }}
+        run: |
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] || [ -n "$DISCORD_WEBHOOK_URL" ]; then
+            if [ -f config.yaml ]; then CFG=config.yaml; else CFG=config.example.yaml; fi
+            python -m us_stock_alerts --config "$CFG"
+          fi
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -35,4 +46,6 @@ jobs:
           path: |
             out/signals.csv
             out/signals.md
+            out/dashboard.html
+            out/decisions.json
             state.json

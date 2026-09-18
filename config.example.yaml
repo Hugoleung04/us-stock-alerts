@@ -22,13 +22,14 @@ strategy:
   volume_mult: 1.10
   sell_drawdown: 0.10
   min_history: 60
+  buy_threshold: 0.55
+  sell_threshold: 0.45
+  trail_bars: 40
 
 notify:
-  # Only send BUY / SELL. Set false to also send HOLD / WATCH lines.
   only_actionable: true
   telegram:
     enabled: false
-    # TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID env vars override these
     bot_token: ""
     chat_id: ""
   discord:
