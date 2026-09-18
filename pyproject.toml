@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "us-stock-alerts"
-version = "1.0.0"
-description = "US stock swing-signal scanner with Telegram / Discord / Slack / webhook alerts. No order execution."
+version = "1.1.0"
+description = "US stock Buy/Sell probability scanner with a local dashboard and alerts. No order execution."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
